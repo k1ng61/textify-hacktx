@@ -1,4 +1,4 @@
-<img width="1185" alt="banner" src="https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/Blue%20Pink%20Gradient%20Fashion%20Banner.png?alt=media&token=f5920a81-f6b2-4b18-b74c-8d4912c6d3ec">
+<img width="1185" alt="banner" src="[https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/Blue%20Pink%20Gradient%20Fashion%20Banner.png?alt=media&token=f5920a81-f6b2-4b18-b74c-8d4912c6d3ec">
 
 ## Inspiration
 Brands make millions of dollars with email marketing every year. SMS marketing performs much better than email in every metric possible, yet its not widely used. Now imagine you can add an AI salesman to the mix that closes deals for you directly in your customers messages. Introducing Textify.
