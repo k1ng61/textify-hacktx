@@ -30,3 +30,19 @@
   overflow-y: scroll;
   border-radius: 10px;
 }
+
+.centered-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.front-image{
+  mix-blend-mode: darken;    
+
+}
+
+.first-page{
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/2a1c1b0f-938e-4fca-a4f3-25c2b61cc93f-1.png?alt=media&token=b0281fdd-031b-4ddc-af7c-486554abc576");
+  background-size: cover;
+}

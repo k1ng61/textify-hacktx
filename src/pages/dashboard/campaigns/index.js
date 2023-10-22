@@ -8,6 +8,7 @@ import { Timestamp, doc, updateDoc, getDoc, deleteDoc,setDoc, collection, addDoc
 import { useRouter } from 'next/router'
 import { ref, uploadBytesResumable, getDownloadURL} from 'firebase/storage';
 import DASHNAV from '@/DASHNAV'
+import Papa from 'papaparse';
 
 export default function Home() {
     const [user] = useAuthState(auth);
@@ -15,11 +16,12 @@ export default function Home() {
   
     const router = useRouter();
     const [title, setTitle] = useState([''])
-
+    const [productDescription, setProductDescription] = useState('');
+    const [salesInfo, setSalesInfo] = useState('');
     const [loading, setLoading] = useState(false);
     const [addCampaign, setaddCampaign] = useState(false);
-    
-
+    const [file, setFile] = useState(null);
+    const [campaigns, setCampaigns] = useState([])
     
     useEffect(() => {
       const getUser = async() => {
@@ -29,9 +31,31 @@ export default function Home() {
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                console.log('herer')
                 setuserData(data);
+                if (data.campaigns) {
+                    let temp = [];
+                 
+                    let promises = data.campaigns.map(async (campaign) => {
+                        const docRef = doc(db, "Campaigns", campaign);
+                        const docSnap = await getDoc(docRef);
+                    
+                        if(docSnap.exists()) {
+                            const campaignData = docSnap.data();
+                            temp.push(campaignData);
+                         }
+                    })
                 
-            }
+                    Promise.all(promises)
+                        .then(() => {
+                            setCampaigns(temp);
+                            console.log(temp);
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    }
+                }
           }
           
       } 
@@ -51,13 +75,89 @@ export default function Home() {
       }
 
     const handleCampaignAdd = async() => {
+        if (!productDescription || !salesInfo){
+            alert("Product and Sales Info are required");
+            return;
+        }
+        setLoading(null);
+        setLoading(true);
+
+        if (!file){
+            const dbref = collection(db, "Campaigns");
+            await addDoc(dbref, {
+                user: user.uid,
+                createdAt: Timestamp.now().toDate(),
+                title: title,
+                brandDescription:productDescription,
+                salesInfo: salesInfo,                
+            })
+            .then(async docRef => {
+                const id = docRef.id;
+                let temp = [];
+                if (userData.campaigns){
+                    temp = [...userData.campaigns];
+                }
+                temp.push(id);
+                await updateDoc(doc(db,"Users", user.uid), {
+                    campaigns: temp });         
+                })
+           
+        }
+        else{
+            const reader = new FileReader();
+            reader.onload = async function(fileLoadedEvent) {
+                const data = fileLoadedEvent.target.result;
+                const parsedData = Papa.parse(data).data;
+    
+                const titleIndex = parsedData[0].indexOf('Name');
+                const numberIndex = parsedData[0].indexOf('Number');
+    
+                const usersList = parsedData.slice(1)
+                    .filter(v => v.length > 1 && (v[titleIndex] || v[numberIndex]))
+                    .map(v => ({
+                        Name: v[titleIndex] ? v[titleIndex] : '', 
+                        Number: v[numberIndex] ? parseInt( v[numberIndex].replace('+', '') ) : null // Updated line 
+                    }));
+                const dbref = collection(db, "Campaigns");
+                await addDoc(dbref, {
+                    user: user.uid,
+                    createdAt: Timestamp.now().toDate(),
+                    title: title,
+                    brandDescription:productDescription,
+                    salesInfo: salesInfo,
+                    users: usersList                
+                })
+                .then(async docRef => {
+                    const id = docRef.id;
+                    let temp = [];
+                    if (userData.campaigns){
+                        temp = [...userData.campaigns];
+                    }
+                    temp.push(id);
+                    await updateDoc(doc(db,"Users", user.uid), {
+                        campaigns: temp });         
+                    })
+
+
+                    setaddCampaign(false);
+                    setLoading(false);
+                    
+             
+
+            };
+        reader.readAsText(file);
+        }
+
+        setaddCampaign(false);
+        setLoading(false);
+
 
     }
   return (
     <>
       <Head>
-      <title>hackTX</title>
-        <meta name="description" content="create next app" />
+      <title>Textify</title>
+        <meta name="description" content="Mailchimp for SMS, powered by AI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -76,7 +176,7 @@ export default function Home() {
             <DASHNAV renderFunction={() => <>
         
                 <div className='button-container float-right px-16 pt-2'>
-                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => sidepress(e)}>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => sidepress(e)}>
                 Add
                 </button>
             </div>
@@ -123,7 +223,43 @@ export default function Home() {
                                     <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                                         
 
-                                    
+                                    {campaigns.map((campaign, index) => (
+                                            <>
+                                            <tr>
+                                                <td class="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                                                    <div class="inline-flex items-center gap-x-3">
+                                                        <input type="checkbox" class="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
+
+                                                        <span>Live</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <div>
+                                                            <h2 class="text-sm font-medium text-gray-800 dark:text-white ">{campaign.title}</h2>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 text-blue-400 whitespace-nowrap">{campaign.users? campaign.users.length : 0}</td>
+                                                
+                                                
+                                                <td class="px-4 py-4 text-sm whitespace-nowrap">
+                                                    <div class="flex items-center gap-x-6">
+                                                        <button onClick={() => router.push(`/dashboard/campaigns/${userData.campaigns[index]}`)} class="px-5 py-3 text-gray-200 rounded transition-colors duration-200 bg-blue-600 hover:text-indigo-500 focus:outline-none">
+                                                            View
+                                                        </button>
+                                                        <button onClick={() => router.push(`/campaigns/${userData.campaigns[index]}`)} class="px-5 py-3 text-gray-200 rounded transition-colors duration-200 bg-blue-600 hover:text-indigo-500 focus:outline-none">
+                                                            Share
+                                                        </button>
+                                                   
+                                                        
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                            
+                                            </>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -139,17 +275,31 @@ export default function Home() {
                             id='buy-parent' className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                 <div className='dashboard-popup p-10 relative'>
                 
-                    <p>New Campaign</p>
+                    <p className='text-center'>New Campaign</p>
                     <div>
-                    <div class="mb-6 pt-2">
-                        <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                        <div class="mb-6 pt-2">
+                            <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input value={title} type="text" id="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e)=>{setTitle(e.target.value)}} placeholder='Feastables' />
+                        </div>
+                        <div class="mb-6 pt-2">
+                            <label for="productInfo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Info</label>
+                            <textarea onChange={(e) => setProductDescription(e.target.value)} id="productInfo" class="bg-gray-50 border border-gray-300 h-40 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Feastables, the chocolate brand that redefines indulgence and elevates your chocolate experience to new heights. In a world where ordinary chocolate simply won't suffice, feastables stands as the epitome of cocoa perfection, transcending the very essence of what it means to savor the rich, velvety pleasure of chocolate.
+
+Crafted with an unwavering commitment to quality, each delectable morsel of feastables is a masterpiece of chocolate artistry. Our chocolatiers combine the finest, ethically sourced cocoa beans from across the globe, with a dash of innovation and a sprinkle of passion, to create symphonies of flavor that dance on your taste buds."></textarea>
+                        </div>
+                        <div class="mb-6 pt-2">
+                            <label for="salesInfo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sales Info</label>
+                            <textarea onChange={(e) => setSalesInfo(e.target.value)} id="salesInfo" class="bg-gray-50 border border-gray-300 h-40 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Mrbeast bar is the signature product, comes in packs of 10 for $29.99 buy link: (https://feastables.com/products/original-chocolate)"></textarea>
+                        </div>
                         
-                        <input type="text" id="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e)=>{setName(e.target.value)}} placeholder='Campaign title' />
-                    </div>
-                    <button onClick={handleCampaignAdd} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Add
-                    </button>
-                    
+                        <div class="mb-6 pt-2">
+                            <label for="csvUpload" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Phone numbers (not required)</label>
+                            <input type="file" id="csvUpload" name="csvUpload" accept=".csv" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => {setFile(e.target.files[0])}}/>
+                        </div>
+
+                        <button onClick={handleCampaignAdd} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Add
+                        </button>
                     </div>
                         
                   
