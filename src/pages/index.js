@@ -4,12 +4,17 @@ import { useRouter } from 'next/router'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebaseConfig';
 import Head from 'next/head';
+import { useEffect } from 'react';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const router = useRouter();
   const [user] = useAuthState(auth);
-
+  useEffect(() => {
+    window.plugSDK.init({
+      app_id: 'don:core:dvrv-us-1:devo/V3Czi2bv:plug_setting/1',                
+     });
+ }, []);
   return (
     <>
     <Head>
@@ -17,6 +22,10 @@ export default function Home() {
         <meta name="description" content="Mailchimp for SMS, powered by AI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          src="https://plug-platform.devrev.ai/static/plug.js"                         
+          type="text/javascript">
+        </script>
       </Head>
     <main
     >

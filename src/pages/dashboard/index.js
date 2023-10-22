@@ -85,7 +85,11 @@ export default function Home() {
         },
       ],
     };
-    
+    useEffect(() => {
+      window.plugSDK.init({
+        app_id: 'don:core:dvrv-us-1:devo/V3Czi2bv:plug_setting/1',                
+       });
+   }, []);
   return (
     <>
       <Head>
@@ -99,6 +103,10 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap" rel="stylesheet" />
 
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet" />
+        <script
+          src="https://plug-platform.devrev.ai/static/plug.js"                         
+          type="text/javascript">
+        </script>
 
     </Head>
     <main className='main-dash-container'  >
