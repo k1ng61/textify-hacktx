@@ -97,7 +97,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main >
-      <div className='bg-red-600'>
+      <div className='bg-blue-600'>
       
                         {user? <></>: <>
                         
@@ -109,7 +109,7 @@ export default function Home() {
                                
                                 <div className="flex items-center justify-center p-6 sm:p-12 ">
                                     <div className="w-full">
-                                    <h3 className="mb-4 text-xl font-bold text-red-600">Sign Up</h3>
+                                    <h3 className="mb-4 text-xl font-bold text-blue-600">Sign Up</h3>
         
                                     
                                     <div className="mb-4">
@@ -123,10 +123,10 @@ export default function Home() {
                                             text-sm
                                             border
                                             rounded-md
-                                            focus:border-red-400
+                                            focus:border-blue-400
                                             focus:outline-none
                                             focus:ring-1
-                                            focus:ring-red-600
+                                            focus:ring-blue-600
                                         "
                                         placeholder="Email"
                                         onChange={(e) => {setEmail(e.target.value)}}
@@ -146,10 +146,10 @@ export default function Home() {
                                             text-sm
                                             border
                                             rounded-md
-                                            focus:border-red-400
+                                            focus:border-blue-400
                                             focus:outline-none
                                             focus:ring-1
-                                            focus:ring-red-600
+                                            focus:ring-blue-600
                                         "
                                         placeholder="password"
                                         type="password"
@@ -168,10 +168,10 @@ export default function Home() {
                                             text-center text-white
                                             transition-colors
                                             duration-150
-                                            bg-red-600
+                                            bg-blue-600
                                             border border-transparent
                                             rounded-2xl
-                                            hover:bg-red-700
+                                            hover:bg-blue-700
                                             focus:outline-none
                                         "
                                         onClick={handleLogin}
@@ -208,7 +208,7 @@ export default function Home() {
                                     <div className="mt-4 text-center">
                                         <p className="text-sm">
                                         Already have an account?&nbsp;
-                                        <a href="/login" className="text-red-600 hover:underline">
+                                        <a href="/login" className="text-blue-600 hover:underline">
                                             &nbsp;Login</a>
                                         </p>
                                     </div>

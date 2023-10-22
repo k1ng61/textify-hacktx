@@ -245,7 +245,7 @@ export default function Home() {
                                                 
                                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                                     <div class="flex items-center gap-x-6">
-                                                        <button onClick={() => router.push(`/dashboard/${userData.campaigns[index]}`)} class="px-5 py-3 text-gray-200 rounded transition-colors duration-200 bg-blue-600 hover:text-indigo-500 focus:outline-none">
+                                                        <button onClick={() => router.push(`/dashboard/campaigns/${userData.campaigns[index]}`)} class="px-5 py-3 text-gray-200 rounded transition-colors duration-200 bg-blue-600 hover:text-indigo-500 focus:outline-none">
                                                             View
                                                         </button>
                                                         <button onClick={() => router.push(`/campaigns/${userData.campaigns[index]}`)} class="px-5 py-3 text-gray-200 rounded transition-colors duration-200 bg-blue-600 hover:text-indigo-500 focus:outline-none">
