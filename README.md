@@ -16,7 +16,7 @@ The twilio webhook is designed to respond to the lead. Whenver a message comes i
 
 The proactive message algorithm is designed to send the first message, and follow ups with users when necessary.
 
-###UI/UX Design
+### UI/UX Design
 We used figma to generalize our design inspo and used tailwind to build it out in our nextjs web app. Our focus was to make our design simple yet bold. Catching people's attention, yet still allowing a very simple user process. 
 
 ### Product Management
