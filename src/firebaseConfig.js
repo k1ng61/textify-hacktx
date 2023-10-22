@@ -8,13 +8,13 @@ import {getDatabase} from 'firebase/database'
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCRQqIS3Xavxkg2HOi3cAwebLiNPORn8cM",
-    authDomain: "hacktx-d5e25.firebaseapp.com",
-    projectId: "hacktx-d5e25",
-    storageBucket: "hacktx-d5e25.appspot.com",
-    messagingSenderId: "360545667596",
-    appId: "1:360545667596:web:5267638eb7611a768efc29",
-    measurementId: "G-KWQE84RD10"
+    apiKey: process.env.apiKey,
+    authDomain: process.env.authDomain,
+    projectId: process.env.projectId,
+    storageBucket: process.env.storageBucket,
+    messagingSenderId: process.env.messagingSenderId,
+    appId: process.env.appId,
+    measurementId: process.env.measurementId
 };
 
 const app = firebase.initializeApp(firebaseConfig);
