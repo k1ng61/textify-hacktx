@@ -1,4 +1,5 @@
-![Dark Blue with Space Photos Movie Ticket-4](https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/Blue%20Pink%20Gradient%20Fashion%20Banner.png?alt=media&token=f5920a81-f6b2-4b18-b74c-8d4912c6d3ec)
+<img width="1185" alt="Screen Shot 2023-04-16 at 10 37 28 AM" src="https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/Blue%20Pink%20Gradient%20Fashion%20Banner.png?alt=media&token=f5920a81-f6b2-4b18-b74c-8d4912c6d3ec">
+
 ## Inspiration
 Brands make millions of dollars with email marketing every year. SMS marketing performs much better than email in every metric possible, yet its not widely used. Now imagine you can add an AI salesman to the mix that closes deals for you directly in your customers messages. Introducing Textify.
 
@@ -18,23 +19,23 @@ The proactive message algorithm is designed to send the first message, and follo
 ###UI/UX Design
 We used figma to generalize our design inspo and used tailwind to build it out in our nextjs web app. Our focus was to make our design simple yet bold. Catching people's attention, yet still allowing a very simple user process. 
 
-###Product Management
+### Product Management
 We used devrev to organize everything. It was really helpful, being able to easily add tasks/bugs as well as future roadmaps on the same app was great. We also embeded the customer support chatbot to our app, which will help us down the line when more people are using textify.
 
 Overall using devrev really taught us the power of customer-centric development.
 
-###Backend Development
+### Backend Development
 <img width="1185" alt="Screen Shot 2023-04-16 at 10 37 28 AM" src="https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/textifydashboard.png?alt=media&token=e04ebff7-762c-4b3b-8aa7-620b6f3a3933">
 ####Database
 We used google cloud to handle all of our data storage needs. Static info that required very less changes over time like User details and campaign details are stored in Firebase Firestore. All of the back and forth messages between our AI salesman and leads are stored in Firebase Realtime database. Usage of google cloud, overall, made everything much simpler as users can easily signup for an account on Textify by connecting their google account, which wouldn't have been possible without Firebase Authentication.
 
-####AI Salesman
+#### AI Salesman
 ![Dark Blue with Space Photos Movie Ticket-4](https://firebasestorage.googleapis.com/v0/b/bimi-b478b.appspot.com/o/textifydataset.png?alt=media&token=18c15367-a663-4434-89ed-0ec45719f651)
 Our AI salesman is a gpt-3.5-turbo model fine tuned on a kaggle dataset. One of the biggest challenges we had was find a good dataset that had back and forth sales conversation in a short text-like manner. Emails are meant to be long, text messages are not. We ended up using this customer support dataset on twitter as it offered a lot of conversations between brands and users in a short text-like manner. 
 
 Preprocessing this dataset was also a huge task as threads aren't very easy to detect algorithmically and it's filled with a bunch of fillers such as tags and tweet links that we had to get rid off. But once that was done, fine tuning it was pretty straightforward.
 
-####Twilio webhook and proactive messaging alogrithm
+#### Twilio webhook and proactive messaging alogrithm
 The twilio webhook and proactive messaging algorithms both work the same architecturally. Read messages from Firebase Realtime database, pass into fine tuned gpt, embeded with specification about the brand/product and send the response.
 
 Both are hosted on AWS ec2 server, which allows us to keep the algorithms running at all time. 
